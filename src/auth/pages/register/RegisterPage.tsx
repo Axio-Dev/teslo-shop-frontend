@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { CustomLogo } from '@/components/custom/CustomLogo';
 import { Link } from 'react-router';
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
   return (
     <div className={'flex flex-col gap-6'}>
       <Card className="overflow-hidden p-0">
@@ -15,8 +15,17 @@ export const LoginPage = () => {
               <div className="flex flex-col items-center text-center">
                 <CustomLogo />
                 <p className="text-balance text-muted-foreground">
-                  Ingrese a la aplicación
+                  Crea una cuenta
                 </p>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="fullName">Nombre</Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="Ej. Juan Pérez"
+                  required
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Correo</Label>
@@ -82,12 +91,9 @@ export const LoginPage = () => {
                 </Button>
               </div>
               <div className="text-center text-sm">
-                ¿No tienes una cuenta?{' '}
-                <Link
-                  to="/auth/register"
-                  className="underline underline-offset-4"
-                >
-                  Crea una
+                ¿Ya tienes una cuenta?{' '}
+                <Link to="/auth/login" className="underline underline-offset-4">
+                  Ingresa ahora
                 </Link>
               </div>
             </div>
