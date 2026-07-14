@@ -65,7 +65,7 @@ export const DashboardPage = () => {
     <>
       {/* Welcome Section */}
       <AdminTitle
-        title="Dashboard"
+        title="Dashboard 📊"
         subTitle="Aquí puedes ver el estado de tu negocio"
       />
 
