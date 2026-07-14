@@ -1,10 +1,41 @@
-import { useState } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import { Search, ShoppingBag, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useSearchParams } from 'react-router';
 
 const CustomHeader = () => {
-  const [cartCount, setCartCount] = useState(3);
+  const [cartCount] = useState(3);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const query = searchParams.get('query') || '';
+
+  const handelInputSearch = (event: KeyboardEvent<HTMLInputElement>) => {
+    /**
+     * Updates the URL search parameters when the user presses the 'Enter' key.
+     *
+     * Replaces the current URL search parameters with a new set containing only
+     * the 'query' parameter. If the input is empty, the 'query' parameter is
+     * removed, resulting in a URL with no search parameters. The UI also clears the
+     * current filters
+     *
+     * @param event - The keyboard event triggered by the search input.
+     */
+    if (event.key !== 'Enter') return;
+    const newSearchParams = new URLSearchParams();
+
+    const query = inputRef.current?.value;
+    if (!query) {
+      newSearchParams.delete('query');
+    } else {
+      newSearchParams.set('query', inputRef.current!.value);
+    }
+
+    setSearchParams(newSearchParams);
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-slate-50">
       <div className="container mx-auto px-4 lg:px-8">
@@ -53,8 +84,11 @@ const CustomHeader = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
+                  ref={inputRef}
                   placeholder="Buscar productos..."
-                  className="pl-9 w-64 h-9"
+                  className="pl-9 w-64 h-9 bg-white"
+                  onKeyDown={handelInputSearch}
+                  defaultValue={query}
                 />
               </div>
             </div>
