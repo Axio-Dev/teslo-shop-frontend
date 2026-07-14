@@ -111,7 +111,7 @@ const CustomHeader = () => {
               </Button>
             </Link>
 
-            <Link to="/auth/login">
+            <Link to="admin/">
               <Button variant="destructive" size="sm" className="ml-2">
                 Admin
               </Button>
