@@ -15,8 +15,15 @@ const FilterSidebar = () => {
       ? currentSizes.filter((s) => s !== size)
       : [...currentSizes, size];
 
+    if (newSizes.length > 1) {
+      searchParams.set('sizes', newSizes.join(','));
+    } else if (newSizes.length === 1) {
+      searchParams.set('sizes', newSizes.toLocaleString());
+    } else {
+      searchParams.delete('sizes');
+    }
+
     searchParams.set('page', '1');
-    searchParams.set('sizes', newSizes.join(','));
     setSearchParams(searchParams);
   };
 
