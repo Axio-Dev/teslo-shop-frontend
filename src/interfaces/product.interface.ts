@@ -1,12 +1,14 @@
-import { Type } from 'lucide-react';
 import type { CreatedBy } from './user.interface';
 
-export interface Result {
+export interface Product {
+  id: string;
   title: string;
   slug: string;
   description: string;
+  clothe_type: string;
   images: Image[];
-  price: string;
+  imageUrls: string[];
+  price: number;
   stock: number;
   gender: Gender;
   sizes: Size[];
@@ -19,7 +21,6 @@ export interface Result {
 export interface Image {
   id: number;
   image: string;
-  product: string;
 }
 
 export type Size = 'Xs' | 'S' | 'M' | 'L' | 'Xl' | 'Xxl';
