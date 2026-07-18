@@ -1,4 +1,4 @@
-import type { CreatedBy } from './user.interface';
+import type { User } from './user.interface';
 
 export interface Product {
   id: string;
@@ -15,7 +15,7 @@ export interface Product {
   tags: string[];
   created_at: Date;
   updated_at: Date;
-  created_by: CreatedBy;
+  created_by: User;
 }
 
 export interface Image {
