@@ -8,6 +8,7 @@ interface Options {
   gender?: string;
   min_price?: number;
   max_price?: number;
+  query?: string;
 }
 
 export const getProductsAction = async (
@@ -15,7 +16,7 @@ export const getProductsAction = async (
 ): Promise<ProductsResponse> => {
   console.log({ options });
 
-  const { limit, offset, gender, sizes, min_price, max_price } = options;
+  const { limit, offset, gender, sizes, min_price, max_price, query } = options;
 
   const { data } = await tesloApi.get<ProductsResponse>('/products/', {
     params: {
@@ -25,6 +26,7 @@ export const getProductsAction = async (
       sizes,
       min_price,
       max_price,
+      q: query,
     },
   });
 
