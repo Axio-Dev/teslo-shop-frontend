@@ -14,8 +14,6 @@ interface Options {
 export const getProductsAction = async (
   options: Options,
 ): Promise<ProductsResponse> => {
-  console.log({ options });
-
   const { limit, offset, gender, sizes, min_price, max_price, query } = options;
 
   const { data } = await tesloApi.get<ProductsResponse>('/products/', {

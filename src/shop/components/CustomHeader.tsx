@@ -14,8 +14,6 @@ const CustomHeader = () => {
   const { user, logout } = useAuthStore();
   const { gender } = useParams();
 
-  console.log(gender);
-
   const inputRef = useRef<HTMLInputElement>(null);
   const query = searchParams.get('query') || '';
 
