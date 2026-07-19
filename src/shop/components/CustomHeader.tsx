@@ -1,13 +1,17 @@
 import { useRef, type KeyboardEvent } from 'react';
 import { Search } from 'lucide-react';
+import { Link, useParams, useSearchParams } from 'react-router';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Link, useParams, useSearchParams } from 'react-router';
 import { cn } from '@/lib/utils';
+
 import { CustomLogo } from '@/components/custom/CustomLogo';
+import { useAuthStore } from '@/auth/store/auth.store';
 
 const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { user, logout } = useAuthStore();
   const { gender } = useParams();
 
   console.log(gender);
@@ -105,11 +109,22 @@ const CustomHeader = () => {
               <Search className="h-5 w-5" />
             </Button>
 
-            <Link to="/auth/login">
-              <Button variant="default" size="sm" className="ml-2">
-                Login
+            {!user ? (
+              <Link to="/auth/login">
+                <Button variant="default" size="sm" className="ml-2">
+                  Login
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="ml-2"
+                onClick={logout}
+              >
+                Cerrar sesión
               </Button>
-            </Link>
+            )}
 
             <Link to="admin/">
               <Button variant="destructive" size="sm" className="ml-2">
