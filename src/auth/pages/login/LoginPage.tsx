@@ -1,20 +1,40 @@
+import { Link, useNavigate } from 'react-router';
+import { useState, type SubmitEvent } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CustomLogo } from '@/components/custom/CustomLogo';
-import { Link } from 'react-router';
-import type { SubmitEvent } from 'react';
+import { loginAction } from '@/auth/actions/login.action';
+import { toast } from 'sonner';
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
+  const [isPosting, setIsPosting] = useState(false);
+
   const handleLogin = async (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault(); // previniendo que se haga un re-charge completo de la página
+    event.preventDefault(); // previniendo que se haga un re-charge completo de la página}
+    setIsPosting(true);
 
     const formData = new FormData(event.target as HTMLFormElement);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    console.log({ email, password });
+    try {
+      const data = await loginAction(email, password);
+      localStorage.setItem('token', data.token);
+      console.log('Re-direccionando al Home');
+      navigate('/');
+    } catch (error) {
+      toast.error('Correo y/o contraseña no válidos', {
+        position: 'top-center',
+      });
+    } finally {
+      setTimeout(() => {
+        setIsPosting(false); // deshabilitando el botón login
+      }, 2000);
+    }
   };
 
   return (
@@ -57,7 +77,7 @@ export const LoginPage = () => {
                   placeholder="Contraseña"
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isPosting}>
                 Ingresar
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">

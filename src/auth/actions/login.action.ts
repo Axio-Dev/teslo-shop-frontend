@@ -6,7 +6,7 @@ export const loginAction = async (
   password: string,
 ): Promise<AuthResponse> => {
   try {
-    const { data } = await tesloApi.post<AuthResponse>('/api/auth/login/', {
+    const { data } = await tesloApi.post<AuthResponse>('/auth/login/', {
       email,
       password,
     });
@@ -15,7 +15,7 @@ export const loginAction = async (
 
     return data;
   } catch (error) {
-    console.log(error);
+    console.log({ error });
     throw error;
   }
 };
