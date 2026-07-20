@@ -51,7 +51,7 @@ export const AdminProductsPage = () => {
         </TableHeader>
         <TableBody>
           {data?.products.map((product) => (
-            <TableRow>
+            <TableRow key={product.id}>
               <TableCell className="font-medium text-center">
                 {product.id}
               </TableCell>
