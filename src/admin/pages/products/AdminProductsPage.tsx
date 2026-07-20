@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/table';
 
 import { useProducts } from '@/shop/hooks/useProducts';
+import { currencyFormatter } from '@/lib/currency-formatter';
 
 export const AdminProductsPage = () => {
   const { data } = useProducts();
@@ -60,7 +61,7 @@ export const AdminProductsPage = () => {
                 />
               </TableCell>
               <TableCell>{product.title}</TableCell>
-              <TableCell>{product.price}</TableCell>
+              <TableCell>{currencyFormatter(Number(product.price))}</TableCell>
               <TableCell>{product.clothe_type}</TableCell>
               <TableCell>{product.stock}</TableCell>
               <TableCell>{product.sizes.join(', ').toUpperCase()}</TableCell>
