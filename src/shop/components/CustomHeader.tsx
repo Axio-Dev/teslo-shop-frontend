@@ -1,4 +1,3 @@
-import { useRef, type KeyboardEvent } from 'react';
 import { Search } from 'lucide-react';
 import { Link, useParams, useSearchParams } from 'react-router';
 
@@ -8,38 +7,15 @@ import { cn } from '@/lib/utils';
 
 import { CustomLogo } from '@/components/custom/CustomLogo';
 import { useAuthStore } from '@/auth/store/auth.store';
+import { useProductsSearch } from '@/hooks/useProductsSearch';
 
 const CustomHeader = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { authStatus, isAdmin, logout } = useAuthStore();
   const { gender } = useParams();
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { inputRef, handleInputSearch } = useProductsSearch();
   const query = searchParams.get('query') || '';
-
-  const handelInputSearch = (event: KeyboardEvent<HTMLInputElement>) => {
-    /**
-     * Updates the URL search parameters when the user presses the 'Enter' key.
-     *
-     * Replaces the current URL search parameters with a new set containing only
-     * the 'query' parameter. If the input is empty, the 'query' parameter is
-     * removed, resulting in a URL with no search parameters. The UI also clears the
-     * current filters
-     *
-     * @param event - The keyboard event triggered by the search input.
-     */
-    if (event.key !== 'Enter') return;
-    const newSearchParams = new URLSearchParams();
-
-    const query = inputRef.current?.value;
-    if (!query) {
-      newSearchParams.delete('query');
-    } else {
-      newSearchParams.set('query', inputRef.current!.value);
-    }
-
-    setSearchParams(newSearchParams);
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-slate-50">
@@ -97,7 +73,7 @@ const CustomHeader = () => {
                   ref={inputRef}
                   placeholder="Buscar productos..."
                   className="pl-9 w-64 h-9 bg-white"
-                  onKeyDown={handelInputSearch}
+                  onKeyDown={handleInputSearch}
                   defaultValue={query}
                 />
               </div>

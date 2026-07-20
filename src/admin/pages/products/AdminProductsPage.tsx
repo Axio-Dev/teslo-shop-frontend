@@ -1,3 +1,6 @@
+import { Link } from 'react-router';
+import { PlusIcon } from 'lucide-react';
+
 import { AdminTitle } from '@/admin/components/AdminTitle';
 import { CustomPagination } from '@/components/custom/CustomPagination';
 import { Button } from '@/components/ui/button';
@@ -9,10 +12,12 @@ import {
   TableBody,
   TableCell,
 } from '@/components/ui/table';
-import { PlusIcon } from 'lucide-react';
-import { Link } from 'react-router';
+
+import { useProducts } from '@/shop/hooks/useProducts';
 
 export const AdminProductsPage = () => {
+  const { data } = useProducts();
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -44,27 +49,29 @@ export const AdminProductsPage = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">1</TableCell>
-            <TableCell>
-              <img
-                src="https://placehold.co/250x205"
-                alt="Product"
-                className="w-20 h-20 object-cover rounded-md"
-              />
-            </TableCell>
-            <TableCell>Producto 1</TableCell>
-            <TableCell>$250</TableCell>
-            <TableCell>Categoría 1</TableCell>
-            <TableCell>100 pzs</TableCell>
-            <TableCell>XS, S, L, XL</TableCell>
-            <TableCell className="text-right">
-              <Link to={`/admin/products/t-shirt-teslo`}>Editar</Link>
-            </TableCell>
-          </TableRow>
+          {data?.products.map((product) => (
+            <TableRow>
+              <TableCell className="font-medium">{product.id}</TableCell>
+              <TableCell>
+                <img
+                  src={product.imageUrls[0]}
+                  alt={product.title}
+                  className="w-20 h-20 object-cover rounded-md"
+                />
+              </TableCell>
+              <TableCell>{product.title}</TableCell>
+              <TableCell>{product.price}</TableCell>
+              <TableCell>{product.clothe_type}</TableCell>
+              <TableCell>{product.stock}</TableCell>
+              <TableCell>{product.sizes.join(', ').toUpperCase()}</TableCell>
+              <TableCell className="text-right">
+                <Link to={`/admin/products/t-shirt-teslo`}>Editar</Link>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
-      <CustomPagination totalPages={10} />
+      <CustomPagination totalPages={data?.pages || 1} />
     </>
   );
 };
