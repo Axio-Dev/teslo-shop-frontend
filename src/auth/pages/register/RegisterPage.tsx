@@ -3,14 +3,50 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CustomLogo } from '@/components/custom/CustomLogo';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import { useAuthStore } from '@/auth/store/auth.store';
+import { useState, type SubmitEvent } from 'react';
+import { toast } from 'sonner';
 
 export const RegisterPage = () => {
+  const navigate = useNavigate();
+  const { register } = useAuthStore();
+
+  const [isPosting, setIsPosting] = useState(false);
+
+  const handleRegister = async (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsPosting(true);
+
+    const formData = new FormData(event.target as HTMLFormElement);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const first_name = formData.get('first_name') as string;
+    const last_name = (formData.get('last_name') as string) || null;
+
+    const isRegisterSucceeded = await register({
+      email,
+      password,
+      first_name,
+      last_name,
+    });
+
+    if (isRegisterSucceeded) {
+      return navigate('/');
+    }
+
+    toast.error('Datos inválidos, revise los campos ingresados', {
+      position: 'top-center',
+    });
+
+    setIsPosting(false);
+  };
+
   return (
     <div className={'flex flex-col gap-6'}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={(e) => handleRegister(e)}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <CustomLogo />
@@ -19,11 +55,22 @@ export const RegisterPage = () => {
                 </p>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="fullName">Nombre</Label>
+                <Label htmlFor="first_name">Nombre</Label>
                 <Input
-                  id="fullName"
+                  id="first_name"
+                  name="first_name"
                   type="text"
-                  placeholder="Ej. Juan Pérez"
+                  placeholder="Ej. Juan José"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="last_name">Apellido</Label>
+                <Input
+                  id="last_name"
+                  name="last_name"
+                  type="text"
+                  placeholder="Ej. Pérez Vázquez"
                   required
                 />
               </div>
@@ -32,6 +79,7 @@ export const RegisterPage = () => {
                 <Input
                   id="email"
                   type="email"
+                  name="email"
                   placeholder="mail@goole.com"
                   required
                 />
@@ -49,11 +97,12 @@ export const RegisterPage = () => {
                 <Input
                   id="password"
                   type="password"
+                  name="password"
                   required
                   placeholder="Contraseña"
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isPosting}>
                 Ingresar
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
