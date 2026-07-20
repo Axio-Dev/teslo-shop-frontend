@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { PlusIcon } from 'lucide-react';
+import { PencilIcon, PlusIcon } from 'lucide-react';
 
 import { AdminTitle } from '@/admin/components/AdminTitle';
 import { CustomPagination } from '@/components/custom/CustomPagination';
@@ -39,20 +39,22 @@ export const AdminProductsPage = () => {
       <Table className="bg-white p-10 shadow-xs border border-gray-200 mb-10">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Imagen</TableHead>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Precio</TableHead>
-            <TableHead>Categoría</TableHead>
-            <TableHead>Inventario</TableHead>
-            <TableHead>Tallas</TableHead>
-            <TableHead className="text-right">Acciones</TableHead>
+            <TableHead className="w-[100px] text-center">ID</TableHead>
+            <TableHead className="text-center">Imagen</TableHead>
+            <TableHead className="text-center">Nombre</TableHead>
+            <TableHead className="text-center">Precio</TableHead>
+            <TableHead className="text-center">Categoría</TableHead>
+            <TableHead className="text-center">Inventario</TableHead>
+            <TableHead className="text-center">Tallas</TableHead>
+            <TableHead className="text-center">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data?.products.map((product) => (
             <TableRow>
-              <TableCell className="font-medium">{product.id}</TableCell>
+              <TableCell className="font-medium text-center">
+                {product.id}
+              </TableCell>
               <TableCell>
                 <img
                   src={product.imageUrls[0]}
@@ -60,13 +62,28 @@ export const AdminProductsPage = () => {
                   className="w-20 h-20 object-cover rounded-md"
                 />
               </TableCell>
-              <TableCell>{product.title}</TableCell>
-              <TableCell>{currencyFormatter(Number(product.price))}</TableCell>
-              <TableCell>{product.clothe_type}</TableCell>
-              <TableCell>{product.stock}</TableCell>
-              <TableCell>{product.sizes.join(', ').toUpperCase()}</TableCell>
-              <TableCell className="text-right">
-                <Link to={`/admin/products/t-shirt-teslo`}>Editar</Link>
+              <TableCell className="text-center">
+                <Link
+                  to={`/admin/products/${product.id}/`}
+                  className="hover:text-blue-500 underline"
+                >
+                  {product.title}
+                </Link>
+              </TableCell>
+              <TableCell className="text-center">
+                {currencyFormatter(Number(product.price))}
+              </TableCell>
+              <TableCell className="text-center">
+                {product.clothe_type}
+              </TableCell>
+              <TableCell className="text-center">{product.stock}</TableCell>
+              <TableCell className="text-center">
+                {product.sizes.join(', ').toUpperCase()}
+              </TableCell>
+              <TableCell className="text-center">
+                <Link to={`/admin/products/${product.id}/`}>
+                  <PencilIcon className="inline-block w-4 h-4 hover:text-blue-500" />
+                </Link>
               </TableCell>
             </TableRow>
           ))}
