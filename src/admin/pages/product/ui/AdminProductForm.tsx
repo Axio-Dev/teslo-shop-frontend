@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 
 import { AdminTitle } from '@/admin/components/AdminTitle';
 import { Button } from '@/components/ui/button';
-import type { Product } from '@/interfaces/product.interface';
+import type { Product, Size } from '@/interfaces/product.interface';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
   product: Product;
 }
 
-const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const availableSizes: Size[] = ['xs', 's', 'm', 'l', 'xl', 'xxl'];
 
 export const AdminProductForm = ({ title, subTitle, product }: Props) => {
   const [dragActive, setDragActive] = useState(false);
@@ -24,9 +24,14 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
     handleSubmit,
     formState: { errors },
     getValues,
+    setValue,
+    watch,
   } = useForm({
     defaultValues: product,
   });
+
+  const selectedSizes = watch('sizes');
+  console.log({ selectedSizes });
 
   const addTag = () => {
     // if (newTag.trim() && !product.tags.includes(newTag.trim())) {
@@ -45,13 +50,10 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
     // }));
   };
 
-  const addSize = (size: string) => {
-    // if (!product.sizes.includes(size)) {
-    //   setProduct((prev) => ({
-    //     ...prev,
-    //     sizes: [...prev.sizes, size],
-    //   }));
-    // }
+  const addSize = (size: Size) => {
+    const sizeSet = new Set(getValues('sizes'));
+    sizeSet.add(size);
+    setValue('sizes', Array.from(sizeSet));
   };
 
   const removeSize = (sizeToRemove: string) => {
@@ -278,12 +280,17 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
 
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((size) => (
+                  {availableSizes.map((size) => (
                     <span
                       key={size}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200"
+                      className={cn(
+                        'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200',
+                        {
+                          hidden: !selectedSizes.includes(size),
+                        },
+                      )}
                     >
-                      {size}
+                      {size.toLocaleUpperCase()}
                       <button
                         // onClick={() => removeSize(size)}
                         className="ml-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
@@ -300,16 +307,17 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                   </span>
                   {availableSizes.map((size) => (
                     <button
+                      type="button"
                       key={size}
-                      // onClick={() => addSize(size)}
-                      // disabled={product.sizes.includes(size)}
-                      // className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
-                      //   product.sizes.includes(size)
-                      //     ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                      //     : 'bg-slate-200 text-slate-700 hover:bg-slate-300 cursor-pointer'
-                      // }`}
+                      onClick={() => addSize(size)}
+                      disabled={getValues('sizes').includes(size)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
+                        selectedSizes.includes(size)
+                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                          : 'bg-slate-200 text-slate-700 hover:bg-slate-300 cursor-pointer'
+                      }`}
                     >
-                      {size}
+                      {size.toLocaleUpperCase()}
                     </button>
                   ))}
                 </div>
