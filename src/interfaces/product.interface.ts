@@ -23,6 +23,6 @@ export interface Image {
   image: string;
 }
 
-export type Size = 'Xs' | 'S' | 'M' | 'L' | 'Xl' | 'Xxl';
+export type Size = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
 export type Gender = 'kid' | 'men' | 'women' | 'unisex';
