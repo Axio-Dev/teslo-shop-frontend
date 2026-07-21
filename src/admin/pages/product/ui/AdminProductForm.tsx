@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { AdminTitle } from '@/admin/components/AdminTitle';
 import { Button } from '@/components/ui/button';
 import type { Product } from '@/interfaces/product.interface';
+import { cn } from '@/lib/utils';
 
 interface Props {
   title: string;
@@ -17,9 +18,12 @@ interface Props {
 const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 export const AdminProductForm = ({ title, subTitle, product }: Props) => {
-  console.log({ product });
   const [dragActive, setDragActive] = useState(false);
-  const { register } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: product,
   });
 
@@ -79,8 +83,12 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
     console.log(files);
   };
 
+  // TODO: Remover en un futuro
+  const onSubmit = (productLike: Product) =>
+    console.log('On submit', productLike);
+
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-between items-center">
         <AdminTitle title={title} subTitle={subTitle} />
         <div className="flex justify-end mb-10 gap-4">
@@ -117,10 +125,20 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                     type="text"
                     // value={product.title}
                     // onChange={(e) => handleInputChange('title', e.target.value)}
-                    {...register('title')}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    {...register('title', {
+                      required: true,
+                    })}
+                    className={cn(
+                      'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                      {
+                        'border-red-500': errors.title,
+                      },
+                    )}
                     placeholder="Título del producto"
                   />
+                  {errors.title && (
+                    <p className="text-red-500">El título es requerido</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -426,6 +444,6 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
           </div>
         </div>
       </div>
-    </>
+    </form>
   );
 };
