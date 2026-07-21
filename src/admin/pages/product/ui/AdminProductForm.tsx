@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { X, SaveAll, Tag, Upload } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -18,6 +18,8 @@ interface Props {
 const availableSizes: Size[] = ['xs', 's', 'm', 'l', 'xl', 'xxl'];
 
 export const AdminProductForm = ({ title, subTitle, product }: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const [dragActive, setDragActive] = useState(false);
   const {
     register,
@@ -33,14 +35,8 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
   const selectedSizes = watch('sizes');
   console.log({ selectedSizes });
 
-  const addTag = () => {
-    // if (newTag.trim() && !product.tags.includes(newTag.trim())) {
-    //   setProduct((prev) => ({
-    //     ...prev,
-    //     tags: [...prev.tags, newTag.trim()],
-    //   }));
-    //   setNewTag('');
-    // }
+  const addTag = (event: KeyboardEvent<HTMLInputElement>) => {
+    inputRef.current;
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -56,11 +52,10 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
     setValue('sizes', Array.from(sizeSet));
   };
 
-  const removeSize = (sizeToRemove: string) => {
-    //   setProduct((prev) => ({
-    //     ...prev,
-    //     sizes: prev.sizes.filter((size) => size !== sizeToRemove),
-    //   }));
+  const removeSize = (size: Size) => {
+    const sizeRemoved = new Set(getValues('sizes'));
+    sizeRemoved.delete(size);
+    setValue('sizes', Array.from(sizeRemoved));
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -292,8 +287,8 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                     >
                       {size.toLocaleUpperCase()}
                       <button
-                        // onClick={() => removeSize(size)}
-                        className="ml-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                        onClick={() => removeSize(size)}
+                        className="cursor-pointer ml-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -352,9 +347,19 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    // value={newTag}
-                    // onChange={(e) => setNewTag(e.target.value)}
-                    // onKeyDown={(e) => e.key === 'Enter' && addTag()}
+                    ref={inputRef}
+
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === 'Enter' ||
+                        event.key === ' ' ||
+                        event.key === ','
+                      ) {
+                        // TODO: Hacer código
+                        addTag(event);
+                      }
+                    }}
+
                     placeholder="Añadir nueva etiqueta..."
                     className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   />
