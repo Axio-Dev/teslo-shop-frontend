@@ -15,7 +15,7 @@ export interface Product {
   tags: string[];
   created_at: Date;
   updated_at: Date;
-  created_by: User;
+  user: User;
 }
 
 export interface Image {
