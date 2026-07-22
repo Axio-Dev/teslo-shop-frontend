@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
-import { X, SaveAll, Tag, Upload } from 'lucide-react';
-import { useRef, useState, type KeyboardEvent } from 'react';
+import { X, SaveAll, Tag, Upload, Plus } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -33,17 +33,25 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
   });
 
   const selectedSizes = watch('sizes');
+  const selectedTags = watch('tags');
+  const selectedStock = watch('stock');
   console.log({ selectedSizes });
+  console.log({ selectedTags });
 
-  const addTag = (event: KeyboardEvent<HTMLInputElement>) => {
-    inputRef.current;
+  const addTag = () => {
+    const tagSet = new Set(getValues('tags'));
+    const currentTag = inputRef.current!.value;
+
+    if (currentTag === '') return;
+
+    tagSet.add(currentTag);
+    setValue('tags', Array.from(tagSet));
   };
 
   const removeTag = (tagToRemove: string) => {
-    // setProduct((prev) => ({
-    //   ...prev,
-    //   tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    // }));
+    const tagRemoved = new Set(getValues('tags'));
+    tagRemoved.delete(tagToRemove);
+    setValue('tags', Array.from(tagRemoved));
   };
 
   const addSize = (size: Size) => {
@@ -327,7 +335,7 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
 
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-2">
-                  {product.tags.map((tag) => (
+                  {selectedTags.map((tag) => (
                     <span
                       key={tag}
                       className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200"
@@ -335,7 +343,7 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                       <Tag className="h-3 w-3 mr-1" />
                       {tag}
                       <button
-                        // onClick={() => removeTag(tag)}
+                        onClick={() => removeTag(tag)}
                         className="ml-2 text-green-600 hover:text-green-800 transition-colors duration-200"
                       >
                         <X className="h-3 w-3" />
@@ -356,7 +364,9 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                         event.key === ','
                       ) {
                         // TODO: Hacer código
-                        addTag(event);
+                        event.preventDefault();
+                        addTag();
+                        inputRef.current!.value = '';
                       }
                     }}
 
@@ -364,9 +374,9 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                     className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   />
                   {/* // TODO: */}
-                  {/* <Button onClick={addTag} className="px-4 py-2rounded-lg ">
+                  <Button onClick={addTag} className="px-4 py-2rounded-lg ">
                     <Plus className="h-4 w-4" />
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -464,16 +474,16 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                   </span>
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      product.stock > 5
+                      selectedStock > 5
                         ? 'bg-green-100 text-green-800'
-                        : product.stock > 0
+                        : selectedStock > 0
                           ? 'bg-yellow-100 text-yellow-800'
                           : 'bg-red-100 text-red-800'
                     }`}
                   >
-                    {product.stock > 5
+                    {selectedStock > 5
                       ? 'En stock'
-                      : product.stock > 0
+                      : selectedStock > 0
                         ? 'Bajo stock'
                         : 'Sin stock'}
                   </span>
@@ -493,7 +503,7 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
                     Tallas disponibles
                   </span>
                   <span className="text-sm text-slate-600">
-                    {product.sizes.length} tallas
+                    {selectedSizes.length} tallas
                   </span>
                 </div>
               </div>
