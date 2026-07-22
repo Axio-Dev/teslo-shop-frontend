@@ -13,11 +13,19 @@ interface Props {
   title: string;
   subTitle: string;
   product: Product;
+
+  // Methods
+  onSubmit: (productLike: Partial<Product>) => Promise<void>;
 }
 
 const availableSizes: Size[] = ['xs', 's', 'm', 'l', 'xl', 'xxl'];
 
-export const AdminProductForm = ({ title, subTitle, product }: Props) => {
+export const AdminProductForm = ({
+  title,
+  subTitle,
+  product,
+  onSubmit,
+}: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [dragActive, setDragActive] = useState(false);
@@ -35,8 +43,6 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
   const selectedSizes = watch('sizes');
   const selectedTags = watch('tags');
   const selectedStock = watch('stock');
-  console.log({ selectedSizes });
-  console.log({ selectedTags });
 
   const addTag = () => {
     const tagSet = new Set(getValues('tags'));
@@ -88,10 +94,6 @@ export const AdminProductForm = ({ title, subTitle, product }: Props) => {
     const files = e.target.files;
     console.log(files);
   };
-
-  // TODO: Remover en un futuro
-  const onSubmit = (productLike: Product) =>
-    console.log('On submit', productLike);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

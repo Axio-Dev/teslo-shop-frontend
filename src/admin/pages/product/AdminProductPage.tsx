@@ -14,13 +14,18 @@ interface Product {
   sizes: string[];
   gender: string;
   tags: string[];
-  images: string[];
+  imagesUrls: string[];
 }
 
 export const AdminProductPage = () => {
   const { id } = useParams();
 
-  const { isError, isLoading, data: product } = useProduct(id || '');
+  const {
+    isError,
+    isLoading,
+    data: product,
+    handleSubmitForm,
+  } = useProduct(id || '');
 
   const title = id === 'new' ? 'Nuevo producto' : 'Editar producto';
   const subtitle =
@@ -42,6 +47,11 @@ export const AdminProductPage = () => {
   }
 
   return (
-    <AdminProductForm title={title} subTitle={subtitle} product={product} />
+    <AdminProductForm
+      title={title}
+      subTitle={subtitle}
+      product={product}
+      onSubmit={handleSubmitForm}
+    />
   );
 };
