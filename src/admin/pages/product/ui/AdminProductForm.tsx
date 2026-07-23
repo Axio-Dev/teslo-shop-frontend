@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { X, SaveAll, Tag, Upload, Plus } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { get, useForm } from 'react-hook-form';
 
@@ -48,6 +48,10 @@ export const AdminProductForm = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    setFiles([]);
+  }, [product]);
 
   const selectedSizes = watch('sizes');
   const selectedTags = watch('tags');
