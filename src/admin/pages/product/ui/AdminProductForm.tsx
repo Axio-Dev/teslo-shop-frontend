@@ -435,7 +435,7 @@ export const AdminProductForm = ({
                   Imágenes actuales
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {product.imageUrls.map((image, index) => (
+                  {product.imageUrls?.map((image, index) => (
                     <div key={index} className="relative group">
                       <div className="aspect-square bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center">
                         <img
@@ -498,7 +498,7 @@ export const AdminProductForm = ({
                     Imágenes
                   </span>
                   <span className="text-sm text-slate-600">
-                    {product.images.length} imágenes
+                    {product.imageUrls?.length} imágenes
                   </span>
                 </div>
 

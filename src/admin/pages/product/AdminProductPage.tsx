@@ -1,4 +1,4 @@
-import { data, Navigate, useNavigate, useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 
 import { useProduct } from '@/admin/hooks/useProduct';
