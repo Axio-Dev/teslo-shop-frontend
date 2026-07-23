@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { X, SaveAll, Tag, Upload, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 
-import { useForm } from 'react-hook-form';
+import { get, useForm } from 'react-hook-form';
 
 import { AdminTitle } from '@/admin/components/AdminTitle';
 import { Button } from '@/components/ui/button';
@@ -16,10 +16,16 @@ interface Props {
   isProductUpdating: boolean;
 
   // Methods
-  onSubmit: (productLike: Partial<Product>) => Promise<void>;
+  onSubmit: (
+    productLike: Partial<Product> & { files?: File[] },
+  ) => Promise<void>;
 }
 
 const availableSizes: Size[] = ['xs', 's', 'm', 'l', 'xl', 'xxl'];
+
+interface FormInputs extends Product {
+  files?: File[];
+}
 
 export const AdminProductForm = ({
   title,
@@ -28,9 +34,6 @@ export const AdminProductForm = ({
   onSubmit,
   isProductUpdating,
 }: Props) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<File[]>([]);
-
   const [dragActive, setDragActive] = useState(false);
   const {
     register,
@@ -39,9 +42,12 @@ export const AdminProductForm = ({
     getValues,
     setValue,
     watch,
-  } = useForm({
+  } = useForm<FormInputs>({
     defaultValues: product,
   });
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const selectedSizes = watch('sizes');
   const selectedTags = watch('tags');
@@ -94,6 +100,9 @@ export const AdminProductForm = ({
     if (!files) return;
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
+
+    const currentFiles = getValues('files') || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +110,9 @@ export const AdminProductForm = ({
     if (!files) return;
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
+
+    const currentFiles = getValues('files') || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   return (
